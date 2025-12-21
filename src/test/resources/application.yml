@@ -1,0 +1,27 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/testdb
+    username: test
+    password: test
+  
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+  
+  flyway:
+    enabled: true
+
+app:
+  jwt:
+    secret: testSecretKeyForTestingPurposesOnly1234567890
+    access-token-ttl: 3600000
+    refresh-token-ttl: 604800000
+  
+  cors:
+    allowed-origins: http://localhost:3000
+  
+  admin:
+    username: admin
+    password: admin123
+    email: admin@test.com
