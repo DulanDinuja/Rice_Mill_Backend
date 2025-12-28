@@ -1,191 +1,202 @@
--- V1__init.sql
-
--- Enable UUID extension
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+-- V1__init.sql for MySQL
 
 -- Users table
 CREATE TABLE users (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id BINARY(16) PRIMARY KEY DEFAULT (UNHEX(REPLACE(UUID(), '-', ''))),
     username VARCHAR(50) UNIQUE NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
     full_name VARCHAR(100) NOT NULL,
-    active BOOLEAN DEFAULT true,
+    active BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    created_by UUID,
-    updated_by UUID,
-    deleted_at TIMESTAMP
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    created_by BINARY(16),
+    updated_by BINARY(16),
+    deleted_at TIMESTAMP NULL
 );
 
--- Roles (using enum approach)
-CREATE TYPE user_role AS ENUM ('ADMIN', 'MANAGER', 'STAFF');
-
+-- User roles table
 CREATE TABLE user_roles (
-    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    role user_role NOT NULL,
-    PRIMARY KEY (user_id, role)
+    user_id BINARY(16) NOT NULL,
+    role ENUM('ADMIN', 'MANAGER', 'STAFF') NOT NULL,
+    PRIMARY KEY (user_id, role),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
 -- Refresh tokens
 CREATE TABLE refresh_tokens (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    id BINARY(16) PRIMARY KEY DEFAULT (UNHEX(REPLACE(UUID(), '-', ''))),
+    user_id BINARY(16) NOT NULL,
     token VARCHAR(500) UNIQUE NOT NULL,
     expires_at TIMESTAMP NOT NULL,
-    revoked_at TIMESTAMP,
+    revoked_at TIMESTAMP NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    created_by_ip VARCHAR(50)
+    created_by_ip VARCHAR(50),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    INDEX idx_refresh_tokens_user_id (user_id),
+    INDEX idx_refresh_tokens_token (token)
 );
-
-CREATE INDEX idx_refresh_tokens_user_id ON refresh_tokens(user_id);
-CREATE INDEX idx_refresh_tokens_token ON refresh_tokens(token);
 
 -- Warehouses
 CREATE TABLE warehouses (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id BINARY(16) PRIMARY KEY DEFAULT (UNHEX(REPLACE(UUID(), '-', ''))),
     name VARCHAR(100) UNIQUE NOT NULL,
     location VARCHAR(255),
     capacity DECIMAL(15,2) DEFAULT 0 CHECK (capacity >= 0),
     notes TEXT,
-    active BOOLEAN DEFAULT true,
+    active BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    created_by UUID REFERENCES users(id),
-    updated_by UUID REFERENCES users(id),
-    deleted_at TIMESTAMP
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    created_by BINARY(16),
+    updated_by BINARY(16),
+    deleted_at TIMESTAMP NULL,
+    FOREIGN KEY (created_by) REFERENCES users(id),
+    FOREIGN KEY (updated_by) REFERENCES users(id)
 );
 
 -- Suppliers
 CREATE TABLE suppliers (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id BINARY(16) PRIMARY KEY DEFAULT (UNHEX(REPLACE(UUID(), '-', ''))),
     name VARCHAR(100) NOT NULL,
     phone VARCHAR(20),
     address TEXT,
-    active BOOLEAN DEFAULT true,
+    active BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    created_by UUID REFERENCES users(id),
-    updated_by UUID REFERENCES users(id),
-    deleted_at TIMESTAMP
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    created_by BINARY(16),
+    updated_by BINARY(16),
+    deleted_at TIMESTAMP NULL,
+    FOREIGN KEY (created_by) REFERENCES users(id),
+    FOREIGN KEY (updated_by) REFERENCES users(id)
 );
 
 -- Customers
 CREATE TABLE customers (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id BINARY(16) PRIMARY KEY DEFAULT (UNHEX(REPLACE(UUID(), '-', ''))),
     name VARCHAR(100) NOT NULL,
     phone VARCHAR(20),
     address TEXT,
-    active BOOLEAN DEFAULT true,
+    active BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    created_by UUID REFERENCES users(id),
-    updated_by UUID REFERENCES users(id),
-    deleted_at TIMESTAMP
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    created_by BINARY(16),
+    updated_by BINARY(16),
+    deleted_at TIMESTAMP NULL,
+    FOREIGN KEY (created_by) REFERENCES users(id),
+    FOREIGN KEY (updated_by) REFERENCES users(id)
 );
-
--- Product type enum
-CREATE TYPE product_type AS ENUM ('PADDY', 'RICE');
 
 -- Batches/Lots
 CREATE TABLE batches (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    type product_type NOT NULL,
+    id BINARY(16) PRIMARY KEY DEFAULT (UNHEX(REPLACE(UUID(), '-', ''))),
+    type ENUM('PADDY', 'RICE') NOT NULL,
     batch_code VARCHAR(50) NOT NULL,
     batch_date DATE NOT NULL,
     variety VARCHAR(100),
-    supplier_id UUID REFERENCES suppliers(id),
+    supplier_id BINARY(16),
     moisture DECIMAL(5,2) CHECK (moisture >= 0 AND moisture <= 100),
     notes TEXT,
-    active BOOLEAN DEFAULT true,
+    active BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    created_by UUID REFERENCES users(id),
-    updated_by UUID REFERENCES users(id),
-    deleted_at TIMESTAMP,
-    UNIQUE (type, batch_code)
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    created_by BINARY(16),
+    updated_by BINARY(16),
+    deleted_at TIMESTAMP NULL,
+    UNIQUE KEY unique_batch (type, batch_code),
+    FOREIGN KEY (supplier_id) REFERENCES suppliers(id),
+    FOREIGN KEY (created_by) REFERENCES users(id),
+    FOREIGN KEY (updated_by) REFERENCES users(id),
+    INDEX idx_batches_type (type),
+    INDEX idx_batches_batch_code (batch_code)
 );
-
-CREATE INDEX idx_batches_type ON batches(type);
-CREATE INDEX idx_batches_batch_code ON batches(batch_code);
 
 -- Inventory balance
 CREATE TABLE inventory_balance (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    warehouse_id UUID NOT NULL REFERENCES warehouses(id),
-    batch_id UUID NOT NULL REFERENCES batches(id),
-    type product_type NOT NULL,
+    id BINARY(16) PRIMARY KEY DEFAULT (UNHEX(REPLACE(UUID(), '-', ''))),
+    warehouse_id BINARY(16) NOT NULL,
+    batch_id BINARY(16) NOT NULL,
+    type ENUM('PADDY', 'RICE') NOT NULL,
     quantity DECIMAL(15,2) NOT NULL DEFAULT 0,
     unit VARCHAR(10) NOT NULL DEFAULT 'KG',
     version INTEGER NOT NULL DEFAULT 0,
+    active BOOLEAN NOT NULL DEFAULT TRUE,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    created_by UUID REFERENCES users(id),
-    updated_by UUID REFERENCES users(id),
-    UNIQUE (warehouse_id, batch_id, type)
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    created_by BINARY(16),
+    updated_by BINARY(16),
+    deleted_at TIMESTAMP NULL,
+    UNIQUE KEY unique_inventory (warehouse_id, batch_id, type),
+    FOREIGN KEY (warehouse_id) REFERENCES warehouses(id),
+    FOREIGN KEY (batch_id) REFERENCES batches(id),
+    FOREIGN KEY (created_by) REFERENCES users(id),
+    FOREIGN KEY (updated_by) REFERENCES users(id),
+    INDEX idx_inventory_warehouse_type (warehouse_id, type),
+    INDEX idx_inventory_batch (batch_id)
 );
-
-CREATE INDEX idx_inventory_warehouse_type ON inventory_balance(warehouse_id, type);
-CREATE INDEX idx_inventory_batch ON inventory_balance(batch_id);
-
--- Movement type enum
-CREATE TYPE movement_type AS ENUM ('INBOUND', 'OUTBOUND', 'TRANSFER', 'ADJUSTMENT', 'PROCESSING');
 
 -- Stock movements
 CREATE TABLE stock_movements (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    movement_type movement_type NOT NULL,
-    type product_type NOT NULL,
+    id BINARY(16) PRIMARY KEY DEFAULT (UNHEX(REPLACE(UUID(), '-', ''))),
+    movement_type ENUM('INBOUND', 'OUTBOUND', 'TRANSFER', 'ADJUSTMENT', 'PROCESSING') NOT NULL,
+    type ENUM('PADDY', 'RICE') NOT NULL,
     quantity DECIMAL(15,2) NOT NULL,
     unit VARCHAR(10) NOT NULL DEFAULT 'KG',
-    warehouse_from_id UUID REFERENCES warehouses(id),
-    warehouse_to_id UUID REFERENCES warehouses(id),
-    batch_id UUID NOT NULL REFERENCES batches(id),
-    supplier_id UUID REFERENCES suppliers(id),
-    customer_id UUID REFERENCES customers(id),
+    warehouse_from_id BINARY(16),
+    warehouse_to_id BINARY(16),
+    batch_id BINARY(16) NOT NULL,
+    supplier_id BINARY(16),
+    customer_id BINARY(16),
     reference_no VARCHAR(100),
     reason TEXT,
-    performed_by UUID NOT NULL REFERENCES users(id),
+    performed_by BINARY(16) NOT NULL,
     performed_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (warehouse_from_id) REFERENCES warehouses(id),
+    FOREIGN KEY (warehouse_to_id) REFERENCES warehouses(id),
+    FOREIGN KEY (batch_id) REFERENCES batches(id),
+    FOREIGN KEY (supplier_id) REFERENCES suppliers(id),
+    FOREIGN KEY (customer_id) REFERENCES customers(id),
+    FOREIGN KEY (performed_by) REFERENCES users(id),
+    INDEX idx_stock_movements_performed_at (performed_at),
+    INDEX idx_stock_movements_warehouse_from (warehouse_from_id),
+    INDEX idx_stock_movements_warehouse_to (warehouse_to_id),
+    INDEX idx_stock_movements_type (type),
+    INDEX idx_stock_movements_movement_type (movement_type),
+    INDEX idx_stock_movements_batch (batch_id)
 );
-
-CREATE INDEX idx_stock_movements_performed_at ON stock_movements(performed_at);
-CREATE INDEX idx_stock_movements_warehouse_from ON stock_movements(warehouse_from_id);
-CREATE INDEX idx_stock_movements_warehouse_to ON stock_movements(warehouse_to_id);
-CREATE INDEX idx_stock_movements_type ON stock_movements(type);
-CREATE INDEX idx_stock_movements_movement_type ON stock_movements(movement_type);
-CREATE INDEX idx_stock_movements_batch ON stock_movements(batch_id);
 
 -- Processing records
 CREATE TABLE processing_records (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    input_batch_id UUID NOT NULL REFERENCES batches(id),
-    output_batch_id UUID NOT NULL REFERENCES batches(id),
-    warehouse_id UUID NOT NULL REFERENCES warehouses(id),
+    id BINARY(16) PRIMARY KEY DEFAULT (UNHEX(REPLACE(UUID(), '-', ''))),
+    input_batch_id BINARY(16) NOT NULL,
+    output_batch_id BINARY(16) NOT NULL,
+    warehouse_id BINARY(16) NOT NULL,
     input_qty DECIMAL(15,2) NOT NULL,
     output_qty DECIMAL(15,2) NOT NULL,
     waste_qty DECIMAL(15,2) NOT NULL DEFAULT 0,
     yield_percent DECIMAL(5,2) NOT NULL,
     reference_no VARCHAR(100),
     notes TEXT,
-    performed_by UUID NOT NULL REFERENCES users(id),
+    performed_by BINARY(16) NOT NULL,
     performed_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (input_batch_id) REFERENCES batches(id),
+    FOREIGN KEY (output_batch_id) REFERENCES batches(id),
+    FOREIGN KEY (warehouse_id) REFERENCES warehouses(id),
+    FOREIGN KEY (performed_by) REFERENCES users(id),
+    INDEX idx_processing_records_performed_at (performed_at),
+    INDEX idx_processing_records_warehouse (warehouse_id)
 );
-
-CREATE INDEX idx_processing_records_performed_at ON processing_records(performed_at);
-CREATE INDEX idx_processing_records_warehouse ON processing_records(warehouse_id);
 
 -- Settings
 CREATE TABLE settings (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id BINARY(16) PRIMARY KEY DEFAULT (UNHEX(REPLACE(UUID(), '-', ''))),
     setting_key VARCHAR(100) UNIQUE NOT NULL,
     setting_value TEXT,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
 -- Insert default settings
@@ -198,16 +209,17 @@ INSERT INTO settings (setting_key, setting_value) VALUES
 
 -- Insert admin user (password will be set via application on first run)
 -- Password hash for 'admin123' using BCrypt
+SET @admin_id = UNHEX(REPLACE(UUID(), '-', ''));
 INSERT INTO users (id, username, email, password_hash, full_name, active)
 VALUES (
-    uuid_generate_v4(),
+    @admin_id,
     '${ADMIN_USERNAME}',
     '${ADMIN_EMAIL}',
     '$2a$10$dummyHashWillBeReplacedByApplication',
     'System Administrator',
-    true
+    TRUE
 );
 
 -- Assign ADMIN role to the admin user
 INSERT INTO user_roles (user_id, role)
-SELECT id, 'ADMIN'::user_role FROM users WHERE username = '${ADMIN_USERNAME}';
+VALUES (@admin_id, 'ADMIN');

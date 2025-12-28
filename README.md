@@ -24,7 +24,7 @@ Production-ready REST API backend for Rice Mill management system built with Jav
   - Spring Security
   - Spring Validation
   - Spring Actuator
-- **PostgreSQL 16**
+- **MySQL 8.0**
 - **Flyway** for database migrations
 - **JWT (jjwt 0.12.3)** for authentication
 - **Lombok** for boilerplate reduction
@@ -36,7 +36,7 @@ Production-ready REST API backend for Rice Mill management system built with Jav
 
 - Java 21 or higher
 - Maven 3.8+
-- PostgreSQL 16 (or use Docker Compose)
+- MySQL 8.0 (or use Docker Compose)
 - IntelliJ IDEA (recommended)
 
 ## Quick Start
@@ -55,14 +55,14 @@ cp .env.example .env
 docker-compose up -d
 ```
 
-### 2. Start PostgreSQL (Option B: Local Installation)
+### 2. Start MySQL (Option B: Local Installation)
 
-Install PostgreSQL and create database:
+Install MySQL and create database:
 ```sql
 CREATE DATABASE ricemill_dev;
 ```
 
-Update `.env` with your PostgreSQL credentials.
+Update `.env` with your MySQL credentials.
 
 ### 3. Build and Run
 
@@ -313,14 +313,14 @@ java -jar target/rice-mill-backend-1.0.0.jar \
 ### Database Connection Issues
 
 ```bash
-# Check PostgreSQL is running
+# Check MySQL is running
 docker-compose ps
 
 # View logs
-docker-compose logs postgres
+docker-compose logs mysql
 
 # Restart
-docker-compose restart postgres
+docker-compose restart mysql
 ```
 
 ### Port Already in Use
