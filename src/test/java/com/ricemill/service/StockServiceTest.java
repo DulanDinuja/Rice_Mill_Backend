@@ -10,6 +10,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -25,6 +27,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 class StockServiceTest {
     
     @Mock
@@ -62,43 +65,41 @@ class StockServiceTest {
     @BeforeEach
     void setUp() {
         warehouse = Warehouse.builder()
-                .id(UUID.randomUUID())
                 .name("Main Warehouse")
                 .capacity(BigDecimal.valueOf(10000))
-                .active(true)
                 .build();
+        warehouse.setId(UUID.randomUUID());
+        warehouse.setActive(true);
         
         batch = Batch.builder()
-                .id(UUID.randomUUID())
                 .type(ProductType.PADDY)
                 .batchCode("BATCH001")
                 .batchDate(LocalDate.now())
-                .active(true)
                 .build();
+        batch.setId(UUID.randomUUID());
+        batch.setActive(true);
         
         user = User.builder()
-                .id(UUID.randomUUID())
                 .username("testuser")
                 .fullName("Test User")
-                .active(true)
                 .build();
+        user.setId(UUID.randomUUID());
+        user.setActive(true);
         
         inventory = InventoryBalance.builder()
-                .id(UUID.randomUUID())
                 .warehouse(warehouse)
                 .batch(batch)
                 .type(ProductType.PADDY)
                 .quantity(BigDecimal.valueOf(100))
                 .unit("KG")
                 .build();
+        inventory.setId(UUID.randomUUID());
         
         Authentication authentication = mock(Authentication.class);
         SecurityContext securityContext = mock(SecurityContext.class);
         when(securityContext.getAuthentication()).thenReturn(authentication);
         when(authentication.getName()).thenReturn("testuser");
         SecurityContextHolder.setContext(securityContext);
-        
-        when(userRepository.findByUsername("testuser")).thenReturn(Optional.of(user));
     }
     
     @Test

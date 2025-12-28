@@ -43,7 +43,7 @@ public class WarehouseService {
                 .location(request.getLocation())
                 .capacity(request.getCapacity() != null ? request.getCapacity() : BigDecimal.ZERO)
                 .notes(request.getNotes())
-                .active(true)
+//                .active(true)
                 .build();
         
         warehouse = warehouseRepository.save(warehouse);

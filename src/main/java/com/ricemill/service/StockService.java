@@ -184,7 +184,7 @@ public class StockService {
                             .batchCode(request.getOutputBatchCode())
                             .batchDate(request.getOutputBatchDate())
                             .variety(request.getOutputVariety())
-                            .active(true)
+//                            .active(true)
                             .build();
                     return batchRepository.save(newBatch);
                 });
@@ -232,7 +232,7 @@ public class StockService {
                 .batchDate(request.getBatchDate())
                 .variety(request.getVariety())
                 .moisture(request.getMoisture())
-                .active(true)
+//                .active(true)
                 .build();
         
         if (request.getSupplierId() != null) {
@@ -251,7 +251,7 @@ public class StockService {
                 .type(type)
                 .quantity(BigDecimal.ZERO)
                 .unit("KG")
-                .active(true)
+//                .active(true)
                 .build();
     }
     

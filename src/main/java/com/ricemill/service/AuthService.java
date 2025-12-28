@@ -113,7 +113,7 @@ public class AuthService {
                 .passwordHash(passwordEncoder.encode(request.getPassword()))
                 .fullName(request.getFullName())
                 .roles(roles)
-                .active(true)
+//                .active(true)
                 .build();
         
         user = userRepository.save(user);

@@ -49,7 +49,7 @@ public class UserService {
                 .passwordHash(passwordEncoder.encode(request.getPassword()))
                 .fullName(request.getFullName())
                 .roles(request.getRoles())
-                .active(true)
+//                .active(true)
                 .build();
         
         user = userRepository.save(user);

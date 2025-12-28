@@ -58,7 +58,7 @@ class AuthIntegrationTest {
                 .passwordHash(passwordEncoder.encode("password123"))
                 .fullName("Test User")
                 .roles(Set.of(UserRole.STAFF))
-                .active(true)
+//                .active(true)
                 .build();
         
         userRepository.save(testUser);

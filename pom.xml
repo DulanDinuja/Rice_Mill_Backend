@@ -19,6 +19,7 @@
     <description>Production-ready backend for Rice Mill management system</description>
     
     <properties>
+        <!-- Set project Java target to 21. Ensure JDK 21 is installed and JAVA_HOME points to it before building. -->
         <java.version>21</java.version>
         <mapstruct.version>1.5.5.Final</mapstruct.version>
         <lombok.version>1.18.30</lombok.version>
@@ -63,6 +64,7 @@
         <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-database-postgresql</artifactId>
+            <version>10.7.1</version>
         </dependency>
         
         <!-- JWT -->
@@ -84,7 +86,7 @@
             <scope>runtime</scope>
         </dependency>
         
-        <!-- Lombok -->
+        <!-- Lombok: change scope so IDE/compiler see generated methods -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>

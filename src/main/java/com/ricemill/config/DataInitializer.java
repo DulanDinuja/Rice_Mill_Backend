@@ -38,7 +38,7 @@ public class DataInitializer implements CommandLineRunner {
                     .passwordHash(passwordEncoder.encode(adminPassword))
                     .fullName("System Administrator")
                     .roles(Set.of(UserRole.ADMIN))
-                    .active(true)
+//                    .active(true)
                     .build();
             
             userRepository.save(admin);

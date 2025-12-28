@@ -36,7 +36,7 @@ public class SupplierService {
                 .name(request.getName())
                 .phone(request.getPhone())
                 .address(request.getAddress())
-                .active(true)
+//                .active(true)
                 .build();
         
         supplier = supplierRepository.save(supplier);

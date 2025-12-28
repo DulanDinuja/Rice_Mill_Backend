@@ -36,7 +36,7 @@ public class CustomerService {
                 .name(request.getName())
                 .phone(request.getPhone())
                 .address(request.getAddress())
-                .active(true)
+//                .active(true)
                 .build();
         
         customer = customerRepository.save(customer);

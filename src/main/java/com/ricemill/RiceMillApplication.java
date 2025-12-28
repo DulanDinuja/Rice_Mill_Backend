@@ -11,6 +11,3 @@ public class RiceMillApplication {
         SpringApplication.run(RiceMillApplication.class, args);
     }
 }
-
-
-+
