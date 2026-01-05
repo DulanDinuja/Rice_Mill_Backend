@@ -1,7 +1,7 @@
 spring:
   application:
-    name: rice-mill-backend
-  
+    name: Rice_mill_Backend
+
   profiles:
     active: dev
   
@@ -52,11 +52,13 @@ spring:
   config:
     activate:
       on-profile: dev
-  
+
   datasource:
-    url: jdbc:mysql://localhost:3306/ricemill_dev?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
-    username: root
-    password: ""
+    # Add createDatabaseIfNotExist=true to avoid "Unknown database" on fresh machines
+    url: ${DB_URL:jdbc:mysql://localhost:3306/ricemill_dev?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC}
+    # Prefer a dedicated dev user over MySQL root (root auth varies by install).
+    username: ${DB_USER:root}
+    password: ${DB_PASSWORD:Dulan@25467}
     driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
       maximum-pool-size: 10
