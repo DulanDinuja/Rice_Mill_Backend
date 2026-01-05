@@ -5,7 +5,7 @@ services:
     image: mysql:8.0
     container_name: ricemill-mysql
     environment:
-      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-root}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-Dulan@5467}
       MYSQL_DATABASE: ${DB_NAME:-ricemill_dev}
     ports:
       - "${DB_PORT:-3306}:3306"
