@@ -33,8 +33,23 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
         
+        final String jwt = authHeader.substring(7).trim();
+
+        // If client sends `Authorization: Bearer` or `Bearer $ACCESS_TOKEN` without substitution,
+        // we should respond with 401 to make the problem obvious.
+        if (jwt.isEmpty() || jwt.contains(" ") || jwt.split("\\.").length != 3) {
+            String preview = jwt;
+            if (preview.length() > 20) {
+                preview = preview.substring(0, 20) + "…";
+            }
+            logger.warn("Invalid JWT token format (rawLength=" + jwt.length() + ", preview='" + preview + "')");
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+            response.getWriter().write("{\"message\":\"Invalid or malformed JWT\"}");
+            return;
+        }
+
         try {
-            final String jwt = authHeader.substring(7);
             final String username = jwtUtil.extractUsername(jwt);
             
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
@@ -48,7 +63,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 }
             }
         } catch (Exception e) {
-            logger.error("Cannot set user authentication: {}", e);
+            logger.warn("JWT authentication failed: " + e.getMessage());
         }
         
         chain.doFilter(request, response);

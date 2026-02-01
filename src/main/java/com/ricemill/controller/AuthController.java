@@ -61,8 +61,7 @@ public class AuthController {
     }
     
     @PostMapping("/register")
-    @PreAuthorize("hasRole('ADMIN')")
-    @Operation(summary = "Register new user", description = "Create new user account (Admin only)")
+    @Operation(summary = "Register new user", description = "Create new user account")
     public ApiResponse<AuthDto.UserInfo> register(@Valid @RequestBody AuthDto.RegisterRequest request) {
         return ApiResponse.success(authService.register(request));
     }

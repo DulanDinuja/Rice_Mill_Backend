@@ -30,7 +30,12 @@ public class RefreshToken {
     private LocalDateTime expiresAt;
     
     private LocalDateTime revokedAt;
-    
+
+    /**
+     * IMPORTANT: Lombok's @Builder does NOT apply field initializers unless @Builder.Default is used.
+     * Without this, createdAt may end up null and cause DB constraint errors.
+     */
+    @Builder.Default
     @Column(nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
     

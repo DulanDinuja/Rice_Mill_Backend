@@ -28,10 +28,34 @@ public class DataInitializer implements CommandLineRunner {
     
     @Value("${app.admin.email}")
     private String adminEmail;
-    
+
+    /**
+     * Dev-safety valve: if true, we will update the existing admin user's password to match
+     * {@code app.admin.password} on startup.
+     */
+    @Value("${app.admin.force-password-sync:false}")
+    private boolean forcePasswordSync;
+
     @Override
     public void run(String... args) {
-        if (!userRepository.existsByUsername(adminUsername)) {
+        userRepository.findByUsername(adminUsername).ifPresentOrElse(existing -> {
+            boolean needsPasswordUpdate = !passwordEncoder.matches(adminPassword, existing.getPasswordHash());
+            boolean needsEmailUpdate = adminEmail != null && !adminEmail.equalsIgnoreCase(existing.getEmail());
+
+            if (forcePasswordSync && needsPasswordUpdate) {
+                existing.setPasswordHash(passwordEncoder.encode(adminPassword));
+                userRepository.save(existing);
+                log.info("Admin user password updated from configuration: {}", adminUsername);
+            } else {
+                log.info("Admin user already exists");
+            }
+
+            if (needsEmailUpdate) {
+                existing.setEmail(adminEmail);
+                userRepository.save(existing);
+                log.info("Admin user email updated from configuration: {}", adminUsername);
+            }
+        }, () -> {
             User admin = User.builder()
                     .username(adminUsername)
                     .email(adminEmail)
@@ -43,8 +67,6 @@ public class DataInitializer implements CommandLineRunner {
             
             userRepository.save(admin);
             log.info("Admin user created: {}", adminUsername);
-        } else {
-            log.info("Admin user already exists");
-        }
+        });
     }
 }

@@ -68,10 +68,15 @@ public class AuthDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class RegisterRequest {
-        @NotBlank(message = "Username is required")
-        @Size(min = 3, max = 50)
-        private String username;
-        
+        @NotBlank(message = "Full name is required")
+        private String fullName;
+
+        @NotBlank(message = "ID number is required")
+        private String idNumber;
+
+        @NotBlank(message = "Mobile number is required")
+        private String mobileNumber;
+
         @NotBlank(message = "Email is required")
         @Email(message = "Invalid email format")
         private String email;
@@ -80,9 +85,7 @@ public class AuthDto {
         @Size(min = 6, message = "Password must be at least 6 characters")
         private String password;
         
-        @NotBlank(message = "Full name is required")
-        private String fullName;
-        
-        private Set<UserRole> roles;
+        @NotBlank(message = "Confirm password is required")
+        private String confirmPassword;
     }
 }

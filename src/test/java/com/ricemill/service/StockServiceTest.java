@@ -100,6 +100,9 @@ class StockServiceTest {
         when(securityContext.getAuthentication()).thenReturn(authentication);
         when(authentication.getName()).thenReturn("testuser");
         SecurityContextHolder.setContext(securityContext);
+
+        // Ensure StockService#getCurrentUser() can resolve the authenticated username.
+        when(userRepository.findByUsername("testuser")).thenReturn(Optional.of(user));
     }
     
     @Test

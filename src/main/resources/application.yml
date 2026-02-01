@@ -39,6 +39,8 @@ app:
     username: admin
     password: admin123
     email: dulandinuja712@gmail.com
+    # Dev convenience: keep DB admin password in sync with this config.
+    force-password-sync: true
 
 springdoc:
   api-docs:

@@ -207,15 +207,14 @@ INSERT INTO settings (setting_key, setting_value) VALUES
 ('timezone', 'UTC'),
 ('lowStockThreshold', '100');
 
--- Insert admin user (password will be set via application on first run)
--- Password hash for 'admin123' using BCrypt
+-- Insert admin user with proper BCrypt hash for 'admin123'
 SET @admin_id = UNHEX(REPLACE(UUID(), '-', ''));
 INSERT INTO users (id, username, email, password_hash, full_name, active)
 VALUES (
     @admin_id,
-    '${ADMIN_USERNAME}',
-    '${ADMIN_EMAIL}',
-    '$2a$10$dummyHashWillBeReplacedByApplication',
+    'admin',
+    'admin@ricemill.com',
+    '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
     'System Administrator',
     TRUE
 );

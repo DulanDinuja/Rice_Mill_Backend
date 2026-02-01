@@ -94,7 +94,15 @@ public class AuthService {
     
     @Transactional
     public AuthDto.UserInfo register(AuthDto.RegisterRequest request) {
-        if (userRepository.existsByUsername(request.getUsername())) {
+        // Validate password confirmation
+        if (!request.getPassword().equals(request.getConfirmPassword())) {
+            throw new BusinessException("Passwords do not match");
+        }
+
+        // Use email as username
+        String username = request.getEmail();
+
+        if (userRepository.existsByUsername(username)) {
             throw new BusinessException("Username already exists");
         }
         
@@ -102,20 +110,21 @@ public class AuthService {
             throw new BusinessException("Email already exists");
         }
         
-        Set<UserRole> roles = request.getRoles() != null ? request.getRoles() : new HashSet<>();
-        if (roles.isEmpty()) {
-            roles.add(UserRole.STAFF);
-        }
-        
+        // Default to STAFF role for public registration
+        Set<UserRole> roles = new HashSet<>();
+        roles.add(UserRole.STAFF);
+
         User user = User.builder()
-                .username(request.getUsername())
+                .username(username)
                 .email(request.getEmail())
                 .passwordHash(passwordEncoder.encode(request.getPassword()))
                 .fullName(request.getFullName())
+                .idNumber(request.getIdNumber())
+                .mobileNumber(request.getMobileNumber())
                 .roles(roles)
-//                .active(true)
                 .build();
-        
+        user.setActive(true);
+
         user = userRepository.save(user);
         
         return AuthDto.UserInfo.builder()
