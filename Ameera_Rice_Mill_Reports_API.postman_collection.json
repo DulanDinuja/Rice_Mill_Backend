@@ -1,0 +1,442 @@
+{
+  "info": {
+    "name": "Ameera Rice Mill - Reports API",
+    "description": "Comprehensive API collection for Ameera Rice Mill Inventory System - Reports Feature",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "BASE_URL",
+      "value": "http://localhost:8080",
+      "type": "string"
+    },
+    {
+      "key": "TOKEN",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    var jsonData = pm.response.json();",
+                  "    if (jsonData.data && jsonData.data.accessToken) {",
+                  "        pm.collectionVariables.set('TOKEN', jsonData.data.accessToken);",
+                  "        console.log('Token saved:', jsonData.data.accessToken);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"admin123\"\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/auth/login",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "auth", "login"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Reports",
+      "item": [
+        {
+          "name": "Get Report Types",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/api/reports/types",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "reports", "types"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Reports Data - Paddy Sale",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/api/reports?reportType=paddy_sale&fromDate=2025-01-01T00:00:00&toDate=2025-02-02T23:59:59&page=1&limit=100",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "reports"],
+              "query": [
+                {
+                  "key": "reportType",
+                  "value": "paddy_sale"
+                },
+                {
+                  "key": "fromDate",
+                  "value": "2025-01-01T00:00:00"
+                },
+                {
+                  "key": "toDate",
+                  "value": "2025-02-02T23:59:59"
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "100"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Reports Data - Paddy Threshing",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/api/reports?reportType=paddy_threshing&fromDate=2025-01-01T00:00:00&toDate=2025-02-02T23:59:59",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "reports"],
+              "query": [
+                {
+                  "key": "reportType",
+                  "value": "paddy_threshing"
+                },
+                {
+                  "key": "fromDate",
+                  "value": "2025-01-01T00:00:00"
+                },
+                {
+                  "key": "toDate",
+                  "value": "2025-02-02T23:59:59"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Reports Data - Rice Sale",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/api/reports?reportType=rice_sale&fromDate=2025-01-01T00:00:00&toDate=2025-02-02T23:59:59",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "reports"],
+              "query": [
+                {
+                  "key": "reportType",
+                  "value": "rice_sale"
+                },
+                {
+                  "key": "fromDate",
+                  "value": "2025-01-01T00:00:00"
+                },
+                {
+                  "key": "toDate",
+                  "value": "2025-02-02T23:59:59"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Reports Data - With Filters",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/api/reports?reportType=paddy_sale&warehouse=Main Warehouse&paddyType=Nadu&supplier=Farmer Co-op A&fromDate=2025-01-01T00:00:00&toDate=2025-02-02T23:59:59",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "reports"],
+              "query": [
+                {
+                  "key": "reportType",
+                  "value": "paddy_sale"
+                },
+                {
+                  "key": "warehouse",
+                  "value": "Main Warehouse"
+                },
+                {
+                  "key": "paddyType",
+                  "value": "Nadu"
+                },
+                {
+                  "key": "supplier",
+                  "value": "Farmer Co-op A"
+                },
+                {
+                  "key": "fromDate",
+                  "value": "2025-01-01T00:00:00"
+                },
+                {
+                  "key": "toDate",
+                  "value": "2025-02-02T23:59:59"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Chart Data - Monthly",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/api/reports/chart?reportType=paddy_sale&fromDate=2025-01-01T00:00:00&toDate=2025-02-02T23:59:59&groupBy=month",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "reports", "chart"],
+              "query": [
+                {
+                  "key": "reportType",
+                  "value": "paddy_sale"
+                },
+                {
+                  "key": "fromDate",
+                  "value": "2025-01-01T00:00:00"
+                },
+                {
+                  "key": "toDate",
+                  "value": "2025-02-02T23:59:59"
+                },
+                {
+                  "key": "groupBy",
+                  "value": "month"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Chart Data - Daily",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/api/reports/chart?reportType=rice_sale&fromDate=2025-01-01T00:00:00&toDate=2025-01-31T23:59:59&groupBy=day",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "reports", "chart"],
+              "query": [
+                {
+                  "key": "reportType",
+                  "value": "rice_sale"
+                },
+                {
+                  "key": "fromDate",
+                  "value": "2025-01-01T00:00:00"
+                },
+                {
+                  "key": "toDate",
+                  "value": "2025-01-31T23:59:59"
+                },
+                {
+                  "key": "groupBy",
+                  "value": "day"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Export Report - CSV",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TOKEN}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reportType\": \"paddy_sale\",\n  \"format\": \"csv\",\n  \"fromDate\": \"2025-01-01T00:00:00\",\n  \"toDate\": \"2025-02-02T23:59:59\",\n  \"filters\": {\n    \"warehouse\": \"Main Warehouse\",\n    \"paddyType\": \"Nadu\"\n  },\n  \"options\": {\n    \"includeSummary\": true,\n    \"fileName\": \"Paddy_Sale_Report_Custom.csv\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/reports/export",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "reports", "export"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Warehouses List",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/api/reports/warehouses",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "reports", "warehouses"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Suppliers List",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/api/reports/suppliers",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "reports", "suppliers"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Movement Report (Legacy)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/api/reports/movements?type=PADDY&movementType=OUTBOUND&from=2025-01-01T00:00:00&to=2025-02-02T23:59:59&page=0&size=20",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "reports", "movements"],
+              "query": [
+                {
+                  "key": "type",
+                  "value": "PADDY"
+                },
+                {
+                  "key": "movementType",
+                  "value": "OUTBOUND"
+                },
+                {
+                  "key": "from",
+                  "value": "2025-01-01T00:00:00"
+                },
+                {
+                  "key": "to",
+                  "value": "2025-02-02T23:59:59"
+                },
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "20"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Processing Report (Legacy)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/api/reports/processing?from=2025-01-01T00:00:00&to=2025-02-02T23:59:59",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "reports", "processing"],
+              "query": [
+                {
+                  "key": "from",
+                  "value": "2025-01-01T00:00:00"
+                },
+                {
+                  "key": "to",
+                  "value": "2025-02-02T23:59:59"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

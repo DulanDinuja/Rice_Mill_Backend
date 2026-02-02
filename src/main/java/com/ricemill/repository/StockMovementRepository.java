@@ -32,6 +32,56 @@ public interface StockMovementRepository extends JpaRepository<StockMovement, UU
         Pageable pageable
     );
     
+    @Query("SELECT sm FROM StockMovement sm " +
+           "LEFT JOIN sm.warehouseFrom wf " +
+           "LEFT JOIN sm.warehouseTo wt " +
+           "LEFT JOIN sm.batch b " +
+           "LEFT JOIN sm.supplier s " +
+           "WHERE (:type IS NULL OR sm.type = :type) " +
+           "AND (:movementType IS NULL OR sm.movementType = :movementType) " +
+           "AND (:warehouse IS NULL OR wf.name = :warehouse OR wt.name = :warehouse) " +
+           "AND (:paddyType IS NULL OR (sm.type = 'PADDY' AND b.variety = :paddyType)) " +
+           "AND (:riceType IS NULL OR (sm.type = 'RICE' AND b.variety = :riceType)) " +
+           "AND (:supplier IS NULL OR s.name = :supplier) " +
+           "AND (:from IS NULL OR sm.performedAt >= :from) " +
+           "AND (:to IS NULL OR sm.performedAt <= :to)")
+    Page<StockMovement> findByFiltersDetailed(
+        @Param("type") ProductType type,
+        @Param("movementType") MovementType movementType,
+        @Param("warehouse") String warehouse,
+        @Param("paddyType") String paddyType,
+        @Param("riceType") String riceType,
+        @Param("supplier") String supplier,
+        @Param("from") LocalDateTime from,
+        @Param("to") LocalDateTime to,
+        Pageable pageable
+    );
+
+    @Query("SELECT sm FROM StockMovement sm " +
+           "LEFT JOIN sm.warehouseFrom wf " +
+           "LEFT JOIN sm.warehouseTo wt " +
+           "LEFT JOIN sm.batch b " +
+           "LEFT JOIN sm.supplier s " +
+           "WHERE (:type IS NULL OR sm.type = :type) " +
+           "AND (:movementType IS NULL OR sm.movementType = :movementType) " +
+           "AND (:warehouse IS NULL OR wf.name = :warehouse OR wt.name = :warehouse) " +
+           "AND (:paddyType IS NULL OR (sm.type = 'PADDY' AND b.variety = :paddyType)) " +
+           "AND (:riceType IS NULL OR (sm.type = 'RICE' AND b.variety = :riceType)) " +
+           "AND (:supplier IS NULL OR s.name = :supplier) " +
+           "AND (:from IS NULL OR sm.performedAt >= :from) " +
+           "AND (:to IS NULL OR sm.performedAt <= :to) " +
+           "ORDER BY sm.performedAt ASC")
+    List<StockMovement> findAllByFiltersDetailed(
+        @Param("type") ProductType type,
+        @Param("movementType") MovementType movementType,
+        @Param("warehouse") String warehouse,
+        @Param("paddyType") String paddyType,
+        @Param("riceType") String riceType,
+        @Param("supplier") String supplier,
+        @Param("from") LocalDateTime from,
+        @Param("to") LocalDateTime to
+    );
+
     @Query("SELECT sm FROM StockMovement sm ORDER BY sm.performedAt DESC")
     List<StockMovement> findRecentMovements(Pageable pageable);
 }
