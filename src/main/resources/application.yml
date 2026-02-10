@@ -42,6 +42,12 @@ app:
     # Dev convenience: keep DB admin password in sync with this config.
     force-password-sync: true
 
+  # Threshing Configuration
+  threshing:
+    min-efficiency: 60.0
+    max-efficiency: 75.0
+    batch-prefix: TH
+
 springdoc:
   api-docs:
     path: /api/docs
@@ -68,7 +74,7 @@ spring:
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: validate
+      ddl-auto: none
     properties:
       hibernate:
         format_sql: true

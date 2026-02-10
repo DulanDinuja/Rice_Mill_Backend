@@ -1,0 +1,184 @@
+================================================================================
+                    🚨 FIX: PORT 8080 ALREADY IN USE
+================================================================================
+
+ERROR MESSAGE:
+  "Web server failed to start. Port 8080 was already in use."
+
+CAUSE:
+  Another instance of your application (or another app) is running on port 8080
+
+================================================================================
+                            ✅ QUICK FIX
+================================================================================
+
+OPTION 1: Kill the Process (Recommended)
+-----------------------------------------
+  Run this command in terminal:
+
+    lsof -ti:8080 | xargs kill -9
+
+  Then restart your application in IntelliJ
+
+
+OPTION 2: One-Line Command
+---------------------------
+  cd /Users/dulandinuja/Desktop/D/Rice_Mill_Backend
+  lsof -ti:8080 | xargs kill -9 && mvn spring-boot:run
+
+
+OPTION 3: Find and Kill Manually
+---------------------------------
+  # 1. Find the process
+  lsof -i :8080
+
+  # Output will show something like:
+  # java    12345 user   123u  IPv6 0x123456  0t0  TCP *:http-alt (LISTEN)
+  #         ^^^^^
+  #          PID
+
+  # 2. Kill it
+  kill -9 12345
+
+
+================================================================================
+                      🔄 RESTART APPLICATION
+================================================================================
+
+After freeing port 8080, restart your application:
+
+  In IntelliJ:
+    1. Click the green "Run" button (▶️)
+    2. Or press: Shift + F10
+
+  In Terminal:
+    cd /Users/dulandinuja/Desktop/D/Rice_Mill_Backend
+    mvn spring-boot:run
+
+
+================================================================================
+                    ✅ VERIFY APPLICATION STARTED
+================================================================================
+
+Check if app is running:
+
+  curl http://localhost:8080/actuator/health
+
+Expected response:
+  {"status":"UP"}
+
+
+Check startup logs for:
+  "Started RiceMillApplication in X.XXX seconds"
+  "Tomcat started on port 8080 (http)"
+
+
+================================================================================
+                    🎯 COMPLETE TESTING WORKFLOW
+================================================================================
+
+1. Free Port 8080
+   lsof -ti:8080 | xargs kill -9
+
+2. Start Application
+   In IntelliJ: Click Run button
+   Wait for: "Started RiceMillApplication..."
+
+3. Get Bearer Token
+   curl -X POST http://localhost:8080/api/v1/auth/login \
+     -H "Content-Type: application/json" \
+     -d '{"usernameOrEmail":"admin","password":"admin123"}'
+
+4. Copy accessToken
+
+5. Test API in Postman
+   Authorization: Bearer [YOUR_TOKEN]
+   ✅ Success!
+
+
+================================================================================
+                    🐛 COMMON SCENARIOS
+================================================================================
+
+Scenario 1: Multiple IntelliJ Instances
+  → Close other IntelliJ instances running the same project
+  → Or kill port 8080 before starting
+
+Scenario 2: Background Maven Process
+  → Run: ps aux | grep "mvn spring-boot:run" | grep -v grep
+  → Kill: kill -9 [PID]
+
+Scenario 3: Another App Using Port 8080
+  → Change your app's port in application.yml:
+    server:
+      port: 8081
+  → Then access: http://localhost:8081
+
+
+================================================================================
+                    🛠️ PREVENTION TIPS
+================================================================================
+
+1. Always stop previous instance before starting new one
+   In IntelliJ: Click Stop button (⬛) before Run
+
+2. Use one instance at a time
+   Don't run from both IntelliJ and Terminal simultaneously
+
+3. Check port before starting
+   lsof -i :8080
+
+4. Add to .zshrc (auto-kill on restart):
+   alias start-rice="lsof -ti:8080 | xargs kill -9 2>/dev/null; \
+     cd /Users/dulandinuja/Desktop/D/Rice_Mill_Backend && mvn spring-boot:run"
+
+
+================================================================================
+                    📋 QUICK COMMANDS REFERENCE
+================================================================================
+
+Kill port 8080:
+  lsof -ti:8080 | xargs kill -9
+
+Check if port is free:
+  lsof -i :8080
+
+Check if app is running:
+  curl http://localhost:8080/actuator/health
+
+View running Java processes:
+  ps aux | grep java | grep -v grep
+
+Kill all Java processes (careful!):
+  pkill -9 java
+
+
+================================================================================
+                    ✅ SOLUTION SUMMARY
+================================================================================
+
+Problem:  Port 8080 already in use
+Fix:      lsof -ti:8080 | xargs kill -9
+Restart:  Click Run in IntelliJ
+Verify:   curl http://localhost:8080/actuator/health
+Test:     Get token → Use in Postman → ✅ Success!
+
+
+================================================================================
+                    📞 STILL HAVING ISSUES?
+================================================================================
+
+If port is still in use after killing:
+  1. Restart your computer
+  2. Check if Docker is using the port: docker ps
+  3. Check system services: sudo lsof -i :8080
+
+If app fails for other reasons:
+  1. Check MySQL is running
+  2. Check application logs in IntelliJ console
+  3. Run: mvn clean install
+  4. Check database connection in application.yml
+
+
+================================================================================
+

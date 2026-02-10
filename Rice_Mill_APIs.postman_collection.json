@@ -1,0 +1,428 @@
+{
+  "info": {
+    "name": "Rice Mill Backend APIs",
+    "description": "Complete API collection for Rice Mill Management System",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.collectionVariables.set(\"token\", jsonData.data.accessToken);",
+                  "    console.log(\"Token saved:\", jsonData.data.accessToken);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"usernameOrEmail\": \"admin\",\n  \"password\": \"admin123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"testuser\",\n  \"email\": \"testuser@example.com\",\n  \"password\": \"Test@1234\",\n  \"confirmPassword\": \"Test@1234\",\n  \"fullName\": \"Test User\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "register"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Paddy Stock",
+      "item": [
+        {
+          "name": "Add Paddy Stock",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"paddyType\": \"Basmati\",\n  \"quantity\": 1000,\n  \"pricePerKg\": 50,\n  \"supplier\": \"ABC Suppliers\",\n  \"supplierContact\": \"1234567890\",\n  \"purchaseDate\": \"2026-02-03\",\n  \"warehouseLocation\": \"Warehouse A\",\n  \"moistureContent\": 14.5,\n  \"qualityGrade\": \"A\",\n  \"batchNumber\": \"PADDY-20260203-0001\",\n  \"notes\": \"Premium quality paddy\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/paddy-stock/add",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "paddy-stock", "add"]
+            }
+          }
+        },
+        {
+          "name": "Get All Paddy Stock",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/paddy-stock?page=0&size=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "paddy-stock"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "10"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Rice Stock",
+      "item": [
+        {
+          "name": "Add Rice Stock",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"riceType\": \"White Rice\",\n  \"variety\": \"Basmati Premium\",\n  \"quantity\": 800,\n  \"packageType\": \"25KG\",\n  \"numberOfPackages\": 32,\n  \"pricePerKg\": 80,\n  \"processingDate\": \"2026-02-03\",\n  \"expiryDate\": \"2027-02-03\",\n  \"warehouseLocation\": \"Warehouse B\",\n  \"qualityGrade\": \"Premium\",\n  \"batchNumber\": \"RICE-20260203-0001\",\n  \"sourcePaddyBatch\": \"PADDY-20260203-0001\",\n  \"notes\": \"Processed from premium paddy\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/rice-stock/add",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "rice-stock", "add"]
+            }
+          }
+        },
+        {
+          "name": "Get All Rice Stock",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/rice-stock?page=0&size=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "rice-stock"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "10"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Sales",
+      "item": [
+        {
+          "name": "Create Paddy Sale",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"batchNumber\": \"PADDY-20260203-0001\",\n  \"quantity\": 100,\n  \"pricePerKg\": 60,\n  \"customerName\": \"John Doe\",\n  \"customerContact\": \"9876543210\",\n  \"customerEmail\": \"john@example.com\",\n  \"customerAddress\": \"123 Main St, City\",\n  \"saleDate\": \"2026-02-03\",\n  \"paymentMethod\": \"CASH\",\n  \"paymentStatus\": \"PAID\",\n  \"paidAmount\": 6000,\n  \"discount\": 5,\n  \"deliveryRequired\": true,\n  \"deliveryAddress\": \"123 Main St, City\",\n  \"deliveryDate\": \"2026-02-04\",\n  \"deliveryCharge\": 200,\n  \"notes\": \"First sale\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/sales/paddy",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "sales", "paddy"]
+            }
+          }
+        },
+        {
+          "name": "Create Rice Sale",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"batchNumber\": \"RICE-20260203-0001\",\n  \"quantity\": 50,\n  \"packageType\": \"25KG\",\n  \"numberOfPackages\": 2,\n  \"pricePerKg\": 90,\n  \"customerName\": \"Jane Smith\",\n  \"customerContact\": \"8765432109\",\n  \"customerEmail\": \"jane@example.com\",\n  \"customerAddress\": \"456 Oak Ave, Town\",\n  \"customerType\": \"RETAIL\",\n  \"saleDate\": \"2026-02-03\",\n  \"paymentMethod\": \"CARD\",\n  \"paymentStatus\": \"PAID\",\n  \"paidAmount\": 4500,\n  \"discount\": 0,\n  \"taxRate\": 5,\n  \"deliveryRequired\": false,\n  \"notes\": \"Retail sale\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/sales/rice",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "sales", "rice"]
+            }
+          }
+        },
+        {
+          "name": "Get All Paddy Sales",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/sales/paddy?page=0&size=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "sales", "paddy"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "10"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Customers",
+      "item": [
+        {
+          "name": "Create Customer",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"ABC Trading Company\",\n  \"phone\": \"1122334455\",\n  \"address\": \"789 Business Park, District\",\n  \"email\": \"abc@trading.com\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/customers",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "customers"]
+            }
+          }
+        },
+        {
+          "name": "Get All Customers",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/customers?page=0&size=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "customers"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "10"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Threshing",
+      "item": [
+        {
+          "name": "Create Threshing Record",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"paddyVariety\": \"Basmati\",\n  \"inputPaddyQuantity\": 1000,\n  \"outputRiceQuantity\": 700,\n  \"wastageQuantity\": 300,\n  \"threshingDate\": \"2026-02-03T10:00:00\",\n  \"millOperatorName\": \"Operator John\",\n  \"machineId\": \"MILL-001\",\n  \"machineType\": \"Modern Thresher\",\n  \"notes\": \"Standard threshing operation\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/threshing",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "threshing"]
+            }
+          }
+        },
+        {
+          "name": "Get All Threshing Records",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/threshing?page=0&size=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "threshing"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "10"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get High Efficiency Records",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/threshing/efficiency?minEfficiency=70.0",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "threshing", "efficiency"],
+              "query": [
+                {
+                  "key": "minEfficiency",
+                  "value": "70.0"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/actuator/health",
+          "host": ["{{baseUrl}}"],
+          "path": ["actuator", "health"]
+        }
+      }
+    }
+  ]
+}
+

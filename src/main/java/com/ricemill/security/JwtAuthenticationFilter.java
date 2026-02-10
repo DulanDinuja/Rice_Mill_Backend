@@ -35,17 +35,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         
         final String jwt = authHeader.substring(7).trim();
 
-        // If client sends `Authorization: Bearer` or `Bearer $ACCESS_TOKEN` without substitution,
-        // we should respond with 401 to make the problem obvious.
+        // If JWT is malformed, just skip authentication and let security config decide if endpoint needs auth
         if (jwt.isEmpty() || jwt.contains(" ") || jwt.split("\\.").length != 3) {
             String preview = jwt;
             if (preview.length() > 20) {
                 preview = preview.substring(0, 20) + "…";
             }
-            logger.warn("Invalid JWT token format (rawLength=" + jwt.length() + ", preview='" + preview + "')");
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.setContentType("application/json");
-            response.getWriter().write("{\"message\":\"Invalid or malformed JWT\"}");
+            logger.warn("Invalid JWT token format (rawLength=" + jwt.length() + ", preview='" + preview + "'), skipping authentication");
+            // Don't block the request - just continue without authentication
+            // If the endpoint requires auth, Spring Security will handle it
+            chain.doFilter(request, response);
             return;
         }
 

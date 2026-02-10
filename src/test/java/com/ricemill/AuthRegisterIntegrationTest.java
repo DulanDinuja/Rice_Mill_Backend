@@ -79,7 +79,7 @@ class AuthRegisterIntegrationTest {
     void registerShouldSucceedWithoutAuthentication() {
         // No login required - public registration
         AuthDto.RegisterRequest req = new AuthDto.RegisterRequest();
-        req.setFullName("Public User");
+        req.setUsername("publicuser");
         req.setIdNumber("555666777V");
         req.setMobileNumber("+94775556666");
         req.setEmail("publicuser@example.com");
@@ -104,7 +104,7 @@ class AuthRegisterIntegrationTest {
         User user = userRepository.findByEmail("publicuser@example.com").orElseThrow();
         assertThat(user.getActive()).isTrue();
         assertThat(user.getRoles()).contains(UserRole.STAFF);
-        assertThat(user.getUsername()).isEqualTo("publicuser@example.com");
+        assertThat(user.getUsername()).isEqualTo("publicuser");
         assertThat(user.getIdNumber()).isEqualTo("555666777V");
         assertThat(user.getMobileNumber()).isEqualTo("+94775556666");
     }
@@ -133,7 +133,7 @@ class AuthRegisterIntegrationTest {
         String accessToken = extractJsonString(loginResp.getBody(), "accessToken");
 
         AuthDto.RegisterRequest req = new AuthDto.RegisterRequest();
-        req.setFullName("Test User");
+        req.setUsername("testuser");
         req.setIdNumber("123456789V");
         req.setMobileNumber("+94771234567");
         req.setEmail("testuser@example.com");
@@ -168,7 +168,7 @@ class AuthRegisterIntegrationTest {
         String accessToken = extractJsonString(loginResp.getBody(), "accessToken");
 
         AuthDto.RegisterRequest req = new AuthDto.RegisterRequest();
-        req.setFullName("Test User Admin");
+        req.setUsername("testuser2");
         req.setIdNumber("987654321V");
         req.setMobileNumber("+94779876543");
         req.setEmail("testuser2@example.com");
@@ -196,7 +196,7 @@ class AuthRegisterIntegrationTest {
     @Test
     void registerShouldFailWhenPasswordsDoNotMatch() {
         AuthDto.RegisterRequest req = new AuthDto.RegisterRequest();
-        req.setFullName("Test User");
+        req.setUsername("testuser");
         req.setIdNumber("123456789V");
         req.setMobileNumber("+94771234567");
         req.setEmail("mismatch@example.com");
@@ -222,7 +222,7 @@ class AuthRegisterIntegrationTest {
     void registerShouldFailWhenEmailAlreadyExists() {
         // First registration
         AuthDto.RegisterRequest req1 = new AuthDto.RegisterRequest();
-        req1.setFullName("First User");
+        req1.setUsername("firstuser");
         req1.setIdNumber("111111111V");
         req1.setMobileNumber("+94771111111");
         req1.setEmail("duplicate@example.com");
@@ -243,7 +243,7 @@ class AuthRegisterIntegrationTest {
 
         // Second registration with same email
         AuthDto.RegisterRequest req2 = new AuthDto.RegisterRequest();
-        req2.setFullName("Second User");
+        req2.setUsername("seconduser");
         req2.setIdNumber("222222222V");
         req2.setMobileNumber("+94772222222");
         req2.setEmail("duplicate@example.com");
@@ -261,6 +261,96 @@ class AuthRegisterIntegrationTest {
 
         assertThat(registerResp2.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(registerResp2.getBody()).contains("Email already exists");
+    }
+
+    @Test
+    void registerShouldFailWhenUsernameAlreadyExists() {
+        // First registration
+        AuthDto.RegisterRequest req1 = new AuthDto.RegisterRequest();
+        req1.setUsername("duplicateuser");
+        req1.setIdNumber("111111111V");
+        req1.setMobileNumber("+94771111111");
+        req1.setEmail("user1@example.com");
+        req1.setPassword("Test@12345");
+        req1.setConfirmPassword("Test@12345");
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<AuthDto.RegisterRequest> entity1 = new HttpEntity<>(req1, headers);
+
+        ResponseEntity<String> registerResp1 = restTemplate.exchange(
+                "/api/auth/register",
+                HttpMethod.POST,
+                entity1,
+                String.class
+        );
+        assertThat(registerResp1.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        // Second registration with same username
+        AuthDto.RegisterRequest req2 = new AuthDto.RegisterRequest();
+        req2.setUsername("duplicateuser");
+        req2.setIdNumber("222222222V");
+        req2.setMobileNumber("+94772222222");
+        req2.setEmail("user2@example.com");
+        req2.setPassword("Test@12345");
+        req2.setConfirmPassword("Test@12345");
+
+        HttpEntity<AuthDto.RegisterRequest> entity2 = new HttpEntity<>(req2, headers);
+
+        ResponseEntity<String> registerResp2 = restTemplate.exchange(
+                "/api/auth/register",
+                HttpMethod.POST,
+                entity2,
+                String.class
+        );
+
+        assertThat(registerResp2.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(registerResp2.getBody()).contains("Username already exists");
+    }
+
+    @Test
+    void registerShouldFailWhenIdNumberAlreadyExists() {
+        // First registration
+        AuthDto.RegisterRequest req1 = new AuthDto.RegisterRequest();
+        req1.setUsername("user1");
+        req1.setIdNumber("DUPLICATE123V");
+        req1.setMobileNumber("+94771111111");
+        req1.setEmail("user1id@example.com");
+        req1.setPassword("Test@12345");
+        req1.setConfirmPassword("Test@12345");
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<AuthDto.RegisterRequest> entity1 = new HttpEntity<>(req1, headers);
+
+        ResponseEntity<String> registerResp1 = restTemplate.exchange(
+                "/api/auth/register",
+                HttpMethod.POST,
+                entity1,
+                String.class
+        );
+        assertThat(registerResp1.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        // Second registration with same ID number
+        AuthDto.RegisterRequest req2 = new AuthDto.RegisterRequest();
+        req2.setUsername("user2");
+        req2.setIdNumber("DUPLICATE123V");
+        req2.setMobileNumber("+94772222222");
+        req2.setEmail("user2id@example.com");
+        req2.setPassword("Test@12345");
+        req2.setConfirmPassword("Test@12345");
+
+        HttpEntity<AuthDto.RegisterRequest> entity2 = new HttpEntity<>(req2, headers);
+
+        ResponseEntity<String> registerResp2 = restTemplate.exchange(
+                "/api/auth/register",
+                HttpMethod.POST,
+                entity2,
+                String.class
+        );
+
+        assertThat(registerResp2.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(registerResp2.getBody()).contains("ID number already exists");
     }
 
     /**

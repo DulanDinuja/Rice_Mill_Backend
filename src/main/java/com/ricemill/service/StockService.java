@@ -279,7 +279,7 @@ public class StockService {
         }
         
         if (customerId != null) {
-            Customer customer = customerRepository.findById(customerId).orElse(null);
+            CustomerEntity customer = customerRepository.findById(customerId).orElse(null);
             builder.customer(customer);
         }
         

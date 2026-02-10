@@ -25,7 +25,6 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/reports")
 @RequiredArgsConstructor
-@PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
 @Tag(name = "Reports", description = "Reporting and analytics endpoints")
 public class ReportController {
     

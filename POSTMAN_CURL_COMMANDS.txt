@@ -1,0 +1,307 @@
+===============================================================================
+RICE MILL BACKEND - READY-TO-USE POSTMAN CURL COMMANDS
+Base URL: http://localhost:8080
+===============================================================================
+
+⭐ IMPORTANT: First run the LOGIN command and copy the accessToken
+Then replace "YOUR_ACCESS_TOKEN" in all commands below with that token
+
+===============================================================================
+1️⃣  LOGIN (Get Access Token)
+===============================================================================
+
+curl --location 'http://localhost:8080/api/v1/auth/login' \
+--header 'Content-Type: application/json' \
+--data '{
+    "usernameOrEmail": "admin",
+    "password": "admin123"
+}'
+
+➡️  COPY THE "accessToken" VALUE FROM RESPONSE
+
+
+===============================================================================
+2️⃣  PADDY STOCK - ADD
+===============================================================================
+
+curl --location 'http://localhost:8080/api/v1/paddy-stock/add' \
+--header 'Content-Type: application/json' \
+--header 'Authorization: Bearer YOUR_ACCESS_TOKEN' \
+--data '{
+    "paddyType": "Basmati",
+    "quantity": 1000,
+    "pricePerKg": 50,
+    "supplier": "ABC Suppliers",
+    "supplierContact": "9876543210",
+    "purchaseDate": "2026-02-03",
+    "warehouseLocation": "Warehouse A",
+    "moistureContent": 14.5,
+    "qualityGrade": "A",
+    "batchNumber": "PADDY-20260203-0001",
+    "notes": "Premium Basmati"
+}'
+
+
+===============================================================================
+3️⃣  PADDY STOCK - GET ALL
+===============================================================================
+
+curl --location 'http://localhost:8080/api/v1/paddy-stock?page=0&size=10' \
+--header 'Authorization: Bearer YOUR_ACCESS_TOKEN'
+
+
+===============================================================================
+4️⃣  PADDY STOCK - GET BY ID
+===============================================================================
+
+curl --location 'http://localhost:8080/api/v1/paddy-stock/PASTE_ID_HERE' \
+--header 'Authorization: Bearer YOUR_ACCESS_TOKEN'
+
+
+===============================================================================
+5️⃣  PADDY STOCK - UPDATE
+===============================================================================
+
+curl --location --request PUT 'http://localhost:8080/api/v1/paddy-stock/PASTE_ID_HERE' \
+--header 'Content-Type: application/json' \
+--header 'Authorization: Bearer YOUR_ACCESS_TOKEN' \
+--data '{
+    "paddyType": "Basmati",
+    "quantity": 1200,
+    "pricePerKg": 52,
+    "supplier": "ABC Suppliers",
+    "supplierContact": "9876543210",
+    "purchaseDate": "2026-02-03",
+    "warehouseLocation": "Warehouse A",
+    "moistureContent": 14.0,
+    "qualityGrade": "A",
+    "notes": "Updated stock"
+}'
+
+
+===============================================================================
+6️⃣  PADDY STOCK - DELETE
+===============================================================================
+
+curl --location --request DELETE 'http://localhost:8080/api/v1/paddy-stock/PASTE_ID_HERE' \
+--header 'Authorization: Bearer YOUR_ACCESS_TOKEN'
+
+
+===============================================================================
+7️⃣  RICE STOCK - ADD
+===============================================================================
+
+curl --location 'http://localhost:8080/api/v1/rice-stock/add' \
+--header 'Content-Type: application/json' \
+--header 'Authorization: Bearer YOUR_ACCESS_TOKEN' \
+--data '{
+    "riceType": "White Rice",
+    "variety": "Basmati Premium",
+    "quantity": 800,
+    "packageType": "25KG",
+    "numberOfPackages": 32,
+    "pricePerKg": 80,
+    "processingDate": "2026-02-03",
+    "expiryDate": "2027-02-03",
+    "warehouseLocation": "Warehouse B",
+    "qualityGrade": "Premium",
+    "batchNumber": "RICE-20260203-0001",
+    "sourcePaddyBatch": "PADDY-20260203-0001",
+    "notes": "Premium white rice"
+}'
+
+
+===============================================================================
+8️⃣  RICE STOCK - GET ALL
+===============================================================================
+
+curl --location 'http://localhost:8080/api/v1/rice-stock?page=0&size=10' \
+--header 'Authorization: Bearer YOUR_ACCESS_TOKEN'
+
+
+===============================================================================
+9️⃣  RICE STOCK - GET BY ID
+===============================================================================
+
+curl --location 'http://localhost:8080/api/v1/rice-stock/PASTE_ID_HERE' \
+--header 'Authorization: Bearer YOUR_ACCESS_TOKEN'
+
+
+===============================================================================
+🔟 RICE STOCK - UPDATE
+===============================================================================
+
+curl --location --request PUT 'http://localhost:8080/api/v1/rice-stock/PASTE_ID_HERE' \
+--header 'Content-Type: application/json' \
+--header 'Authorization: Bearer YOUR_ACCESS_TOKEN' \
+--data '{
+    "riceType": "White Rice",
+    "variety": "Basmati Premium",
+    "quantity": 900,
+    "packageType": "25KG",
+    "numberOfPackages": 36,
+    "pricePerKg": 85,
+    "processingDate": "2026-02-03",
+    "expiryDate": "2027-02-03",
+    "warehouseLocation": "Warehouse B",
+    "qualityGrade": "Premium",
+    "notes": "Updated rice stock"
+}'
+
+
+===============================================================================
+1️⃣1️⃣ RICE STOCK - DELETE
+===============================================================================
+
+curl --location --request DELETE 'http://localhost:8080/api/v1/rice-stock/PASTE_ID_HERE' \
+--header 'Authorization: Bearer YOUR_ACCESS_TOKEN'
+
+
+===============================================================================
+BONUS: MORE TEST DATA
+===============================================================================
+
+--- Add Nadu Paddy ---
+
+curl --location 'http://localhost:8080/api/v1/paddy-stock/add' \
+--header 'Content-Type: application/json' \
+--header 'Authorization: Bearer YOUR_ACCESS_TOKEN' \
+--data '{
+    "paddyType": "Nadu",
+    "quantity": 1500,
+    "pricePerKg": 45,
+    "supplier": "XYZ Traders",
+    "supplierContact": "9123456789",
+    "purchaseDate": "2026-02-03",
+    "warehouseLocation": "Warehouse A",
+    "moistureContent": 15.0,
+    "qualityGrade": "B",
+    "batchNumber": "PADDY-20260203-0002",
+    "notes": "Nadu variety"
+}'
+
+
+--- Add Samba Paddy ---
+
+curl --location 'http://localhost:8080/api/v1/paddy-stock/add' \
+--header 'Content-Type: application/json' \
+--header 'Authorization: Bearer YOUR_ACCESS_TOKEN' \
+--data '{
+    "paddyType": "Samba",
+    "quantity": 2000,
+    "pricePerKg": 48,
+    "supplier": "Golden Harvest",
+    "supplierContact": "9988776655",
+    "purchaseDate": "2026-02-03",
+    "warehouseLocation": "Warehouse B",
+    "moistureContent": 13.5,
+    "qualityGrade": "A",
+    "batchNumber": "PADDY-20260203-0003",
+    "notes": "Samba variety"
+}'
+
+
+--- Add Brown Rice ---
+
+curl --location 'http://localhost:8080/api/v1/rice-stock/add' \
+--header 'Content-Type: application/json' \
+--header 'Authorization: Bearer YOUR_ACCESS_TOKEN' \
+--data '{
+    "riceType": "Brown Rice",
+    "variety": "Nadu",
+    "quantity": 1000,
+    "packageType": "50KG",
+    "numberOfPackages": 20,
+    "pricePerKg": 70,
+    "processingDate": "2026-02-03",
+    "expiryDate": "2027-02-03",
+    "warehouseLocation": "Warehouse B",
+    "qualityGrade": "Standard",
+    "batchNumber": "RICE-20260203-0002",
+    "sourcePaddyBatch": "PADDY-20260203-0002",
+    "notes": "Brown Nadu rice"
+}'
+
+
+--- Add Parboiled Rice ---
+
+curl --location 'http://localhost:8080/api/v1/rice-stock/add' \
+--header 'Content-Type: application/json' \
+--header 'Authorization: Bearer YOUR_ACCESS_TOKEN' \
+--data '{
+    "riceType": "Parboiled Rice",
+    "variety": "Samba",
+    "quantity": 1500,
+    "packageType": "25KG",
+    "numberOfPackages": 60,
+    "pricePerKg": 75,
+    "processingDate": "2026-02-03",
+    "expiryDate": "2027-02-03",
+    "warehouseLocation": "Warehouse B",
+    "qualityGrade": "Premium",
+    "batchNumber": "RICE-20260203-0003",
+    "sourcePaddyBatch": "PADDY-20260203-0003",
+    "notes": "Parboiled Samba"
+}'
+
+
+===============================================================================
+HEALTH CHECK
+===============================================================================
+
+curl --location 'http://localhost:8080/actuator/health'
+
+
+===============================================================================
+USEFUL LINKS
+===============================================================================
+
+Swagger UI: http://localhost:8080/api/swagger-ui.html
+API Docs:   http://localhost:8080/api/docs
+
+
+===============================================================================
+HOW TO USE IN POSTMAN
+===============================================================================
+
+1. Open Postman
+2. Click "Import" button
+3. Select "Raw Text" tab
+4. Copy and paste any cURL command above
+5. Click "Import"
+6. The request will be created automatically!
+
+OR
+
+1. Import the collection: Rice_Mill_APIs.postman_collection.json
+2. All requests will be ready to use!
+
+
+===============================================================================
+TROUBLESHOOTING
+===============================================================================
+
+Error: "Unauthorized (401)"
+→ Your token expired. Run LOGIN command again.
+
+Error: "Batch number already exists (409)"
+→ Change the batchNumber to a unique value.
+
+Error: "Connection refused"
+→ Application not running. Start it with: mvn spring-boot:run
+
+Check if app is running:
+→ curl http://localhost:8080/actuator/health
+
+
+===============================================================================
+✅ YOU'RE ALL SET!
+===============================================================================
+
+1. Start with LOGIN command
+2. Copy the access token
+3. Replace YOUR_ACCESS_TOKEN in other commands
+4. Test away! 🚀
+
+For detailed guide: POSTMAN_TESTING_GUIDE.md
+

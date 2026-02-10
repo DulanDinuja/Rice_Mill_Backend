@@ -1,0 +1,181 @@
+================================================================================
+                     🔐 BEARER TOKEN QUICK REFERENCE
+================================================================================
+
+┌────────────────────────────────────────────────────────────────────────────┐
+│  📍 STEP 1: LOGIN TO GET TOKEN                                             │
+└────────────────────────────────────────────────────────────────────────────┘
+
+  Endpoint:  POST http://localhost:8080/api/v1/auth/login
+
+  Body:      {
+               "usernameOrEmail": "admin",
+               "password": "admin123"
+             }
+
+  Response:  {
+               "success": true,
+               "data": {
+                 "accessToken": "eyJhbGci...YOUR_TOKEN_HERE...",
+                 "user": { "username": "admin" }
+               }
+             }
+
+  ➡️  COPY THE accessToken VALUE
+
+
+┌────────────────────────────────────────────────────────────────────────────┐
+│  📍 STEP 2: USE TOKEN IN YOUR REQUEST                                      │
+└────────────────────────────────────────────────────────────────────────────┘
+
+  In Postman:
+    1. Open your API request
+    2. Go to "Authorization" tab
+    3. Type: Bearer Token
+    4. Token: [PASTE YOUR TOKEN]
+    5. Send ✅
+
+  In cURL:
+    curl -X POST http://localhost:8080/api/v1/paddy-stock/add \
+      -H "Authorization: Bearer YOUR_TOKEN_HERE" \
+      -H "Content-Type: application/json" \
+      -d '{"paddyType":"Basmati",...}'
+
+
+================================================================================
+                        📱 POSTMAN AUTHORIZATION SETUP
+================================================================================
+
+┌─────────────────────────────────────────────────────────────────────┐
+│  Authorization Tab                                                  │
+├─────────────────────────────────────────────────────────────────────┤
+│  Type:  [Bearer Token ▼]                                           │
+│                                                                     │
+│  Token: [eyJhbGci... paste your token here ...]                    │
+│                                                                     │
+│  ✅ Token will be automatically added as:                          │
+│     Authorization: Bearer YOUR_TOKEN                                │
+└─────────────────────────────────────────────────────────────────────┘
+
+
+================================================================================
+                           🚀 ONE-LINE SOLUTIONS
+================================================================================
+
+  Get Token (copy output):
+    curl -s -X POST http://localhost:8080/api/v1/auth/login \
+      -H "Content-Type: application/json" \
+      -d '{"usernameOrEmail":"admin","password":"admin123"}' \
+      | grep -o '"accessToken":"[^"]*"' | cut -d'"' -f4
+
+  Get Token & Save to Variable:
+    TOKEN=$(curl -s -X POST http://localhost:8080/api/v1/auth/login \
+      -H "Content-Type: application/json" \
+      -d '{"usernameOrEmail":"admin","password":"admin123"}' \
+      | grep -o '"accessToken":"[^"]*"' | cut -d'"' -f4)
+
+    echo $TOKEN
+
+  Use Automated Script:
+    cd /Users/dulandinuja/Desktop/D/Rice_Mill_Backend
+    ./get-bearer-token.sh
+
+
+================================================================================
+                          ✅ COMPLETE TEST EXAMPLE
+================================================================================
+
+  # 1. Get token
+  TOKEN=$(curl -s -X POST http://localhost:8080/api/v1/auth/login \
+    -H "Content-Type: application/json" \
+    -d '{"usernameOrEmail":"admin","password":"admin123"}' \
+    | grep -o '"accessToken":"[^"]*"' | cut -d'"' -f4)
+
+  # 2. Use token to add paddy stock
+  curl -X POST http://localhost:8080/api/v1/paddy-stock/add \
+    -H "Authorization: Bearer $TOKEN" \
+    -H "Content-Type: application/json" \
+    -d '{
+      "paddyType": "Basmati",
+      "quantity": 1000,
+      "pricePerKg": 50,
+      "supplier": "ABC Suppliers",
+      "supplierContact": "9876543210",
+      "purchaseDate": "2026-02-03",
+      "warehouseLocation": "Warehouse A",
+      "moistureContent": 14.5,
+      "qualityGrade": "A",
+      "batchNumber": "PADDY-20260203-0001",
+      "notes": "Premium Basmati"
+    }'
+
+  # 3. Success! ✅
+
+
+================================================================================
+                            🐛 TROUBLESHOOTING
+================================================================================
+
+  Error: 403 Forbidden
+    → Missing or wrong token
+    → Fix: Get token and add to Authorization header
+
+  Error: 401 Unauthorized
+    → Token expired
+    → Fix: Login again to get new token
+
+  Error: "Connection refused"
+    → App not running
+    → Fix: mvn spring-boot:run
+
+  Error: Invalid credentials
+    → Wrong username/password
+    → Fix: Use admin / admin123
+
+
+================================================================================
+                         📚 HELPFUL FILES CREATED
+================================================================================
+
+  FIX_403_FORBIDDEN.md          - Solution to your 403 error
+  HOW_TO_GET_BEARER_TOKEN.md    - Complete token guide
+  get-bearer-token.sh           - Automated token script
+  POSTMAN_TESTING_GUIDE.md      - Full Postman guide
+  POSTMAN_CURL_COMMANDS.txt     - All cURL commands
+
+
+================================================================================
+                          🎯 QUICK CHECKLIST
+================================================================================
+
+  Before Testing APIs:
+    ☐ Application is running (mvn spring-boot:run)
+    ☐ You've logged in and got access token
+    ☐ Token is in Authorization header
+    ☐ Authorization type is "Bearer Token"
+    ☐ Token format: Authorization: Bearer eyJhbGci...
+
+
+================================================================================
+                         DEFAULT CREDENTIALS
+================================================================================
+
+  Username: admin
+  Password: admin123
+
+  Base URL: http://localhost:8080
+
+
+================================================================================
+                            ✨ YOU'RE ALL SET!
+================================================================================
+
+  1. Start app
+  2. Get token (login)
+  3. Add to Authorization header
+  4. Test APIs ✅
+
+  Need help? Open: HOW_TO_GET_BEARER_TOKEN.md
+
+================================================================================
+

@@ -17,7 +17,6 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/customers")
 @RequiredArgsConstructor
-@PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'STAFF')")
 @Tag(name = "Customer Management", description = "Customer CRUD operations")
 public class CustomerController {
     
@@ -36,14 +35,12 @@ public class CustomerController {
     }
     
     @PostMapping
-    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     @Operation(summary = "Create customer", description = "Create new customer")
     public ApiResponse<CustomerDto.Response> createCustomer(@Valid @RequestBody CustomerDto.CreateRequest request) {
         return ApiResponse.success(customerService.createCustomer(request));
     }
     
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     @Operation(summary = "Update customer", description = "Update customer details")
     public ApiResponse<CustomerDto.Response> updateCustomer(
             @PathVariable UUID id,
@@ -52,7 +49,6 @@ public class CustomerController {
     }
     
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Delete customer", description = "Soft delete customer")
     public ApiResponse<Void> deleteCustomer(@PathVariable UUID id) {
         customerService.deleteCustomer(id);

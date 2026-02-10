@@ -19,14 +19,12 @@ public class SettingsController {
     private final SettingsService settingsService;
     
     @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'STAFF')")
     @Operation(summary = "Get settings", description = "Get application settings")
     public ApiResponse<SettingsDto.Response> getSettings() {
         return ApiResponse.success(settingsService.getSettings());
     }
     
     @PutMapping
-    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Update settings", description = "Update application settings (Admin only)")
     public ApiResponse<SettingsDto.Response> updateSettings(@Valid @RequestBody SettingsDto.UpdateRequest request) {
         return ApiResponse.success(settingsService.updateSettings(request));

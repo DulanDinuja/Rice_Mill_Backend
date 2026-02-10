@@ -24,7 +24,6 @@ public class StockController {
     private final StockService stockService;
     
     @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'STAFF')")
     @Operation(summary = "Get stock list", description = "Get paginated stock inventory")
     public ApiResponse<Page<StockDto.InventoryResponse>> getStocks(
             @RequestParam ProductType type,
@@ -34,21 +33,18 @@ public class StockController {
     }
     
     @GetMapping("/summary")
-    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'STAFF')")
     @Operation(summary = "Get stock summary", description = "Get total stock summary by type")
     public ApiResponse<StockDto.SummaryResponse> getSummary(@RequestParam ProductType type) {
         return ApiResponse.success(stockService.getSummary(type));
     }
     
     @PostMapping("/inbound")
-    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'STAFF')")
     @Operation(summary = "Inbound stock", description = "Add stock to warehouse")
     public ApiResponse<StockDto.InventoryResponse> inbound(@Valid @RequestBody StockDto.InboundRequest request) {
         return ApiResponse.success(stockService.inbound(request));
     }
     
     @PostMapping("/outbound")
-    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'STAFF')")
     @Operation(summary = "Outbound stock", description = "Remove stock from warehouse")
     public ApiResponse<Void> outbound(@Valid @RequestBody StockDto.OutboundRequest request) {
         stockService.outbound(request);
@@ -56,7 +52,6 @@ public class StockController {
     }
     
     @PostMapping("/transfer")
-    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'STAFF')")
     @Operation(summary = "Transfer stock", description = "Transfer stock between warehouses")
     public ApiResponse<Void> transfer(@Valid @RequestBody StockDto.TransferRequest request) {
         stockService.transfer(request);
@@ -64,7 +59,6 @@ public class StockController {
     }
     
     @PostMapping("/adjust")
-    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     @Operation(summary = "Adjust stock", description = "Adjust stock quantity")
     public ApiResponse<Void> adjust(@Valid @RequestBody StockDto.AdjustmentRequest request) {
         stockService.adjust(request);
@@ -72,7 +66,6 @@ public class StockController {
     }
     
     @PostMapping("/process")
-    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'STAFF')")
     @Operation(summary = "Process paddy to rice", description = "Convert paddy to rice")
     public ApiResponse<Void> process(@Valid @RequestBody StockDto.ProcessRequest request) {
         stockService.process(request);

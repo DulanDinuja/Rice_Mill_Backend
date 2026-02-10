@@ -39,6 +39,126 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(error));
     }
     
+    @ExceptionHandler(StockNotFoundException.class)
+    public ResponseEntity<ApiResponse<Void>> handleStockNotFound(StockNotFoundException ex) {
+        log.error("Stock not found: {}", ex.getMessage());
+        ErrorResponse error = ErrorResponse.builder()
+                .code("STOCK_NOT_FOUND")
+                .message(ex.getMessage())
+                .build();
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.error(error));
+    }
+
+    @ExceptionHandler(DuplicateBatchNumberException.class)
+    public ResponseEntity<ApiResponse<Void>> handleDuplicateBatchNumber(DuplicateBatchNumberException ex) {
+        log.error("Duplicate batch number: {}", ex.getMessage());
+        ErrorResponse error = ErrorResponse.builder()
+                .code("DUPLICATE_BATCH_NUMBER")
+                .message(ex.getMessage())
+                .build();
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(ApiResponse.error(error));
+    }
+
+    @ExceptionHandler(InvalidStockDataException.class)
+    public ResponseEntity<ApiResponse<Void>> handleInvalidStockData(InvalidStockDataException ex) {
+        log.error("Invalid stock data: {}", ex.getMessage());
+        ErrorResponse error = ErrorResponse.builder()
+                .code("INVALID_STOCK_DATA")
+                .message(ex.getMessage())
+                .build();
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(error));
+    }
+
+    @ExceptionHandler(InsufficientStockException.class)
+    public ResponseEntity<ApiResponse<Void>> handleInsufficientStock(InsufficientStockException ex) {
+        log.error("Insufficient stock: {}", ex.getMessage());
+        ErrorResponse error = ErrorResponse.builder()
+                .code("INSUFFICIENT_STOCK")
+                .message(ex.getMessage())
+                .build();
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(error));
+    }
+
+    @ExceptionHandler(InvalidSaleDataException.class)
+    public ResponseEntity<ApiResponse<Void>> handleInvalidSaleData(InvalidSaleDataException ex) {
+        log.error("Invalid sale data: {}", ex.getMessage());
+        ErrorResponse error = ErrorResponse.builder()
+                .code("INVALID_SALE_DATA")
+                .message(ex.getMessage())
+                .build();
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(error));
+    }
+
+    @ExceptionHandler(CustomerCreditLimitExceededException.class)
+    public ResponseEntity<ApiResponse<Void>> handleCreditLimitExceeded(CustomerCreditLimitExceededException ex) {
+        log.error("Credit limit exceeded: {}", ex.getMessage());
+        ErrorResponse error = ErrorResponse.builder()
+                .code("CREDIT_LIMIT_EXCEEDED")
+                .message(ex.getMessage())
+                .build();
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(error));
+    }
+
+    @ExceptionHandler(SaleNotFoundException.class)
+    public ResponseEntity<ApiResponse<Void>> handleSaleNotFound(SaleNotFoundException ex) {
+        log.error("Sale not found: {}", ex.getMessage());
+        ErrorResponse error = ErrorResponse.builder()
+                .code("SALE_NOT_FOUND")
+                .message(ex.getMessage())
+                .build();
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.error(error));
+    }
+
+    @ExceptionHandler(InvalidPaymentException.class)
+    public ResponseEntity<ApiResponse<Void>> handleInvalidPayment(InvalidPaymentException ex) {
+        log.error("Invalid payment: {}", ex.getMessage());
+        ErrorResponse error = ErrorResponse.builder()
+                .code("INVALID_PAYMENT")
+                .message(ex.getMessage())
+                .build();
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(error));
+    }
+
+    @ExceptionHandler(CustomerNotFoundException.class)
+    public ResponseEntity<ApiResponse<Void>> handleCustomerNotFound(CustomerNotFoundException ex) {
+        log.error("Customer not found: {}", ex.getMessage());
+        ErrorResponse error = ErrorResponse.builder()
+                .code("CUSTOMER_NOT_FOUND")
+                .message(ex.getMessage())
+                .build();
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.error(error));
+    }
+
+    @ExceptionHandler(InsufficientPaddyStockException.class)
+    public ResponseEntity<ApiResponse<Void>> handleInsufficientPaddyStock(InsufficientPaddyStockException ex) {
+        log.error("Insufficient paddy stock: {}", ex.getMessage());
+        ErrorResponse error = ErrorResponse.builder()
+                .code("INSUFFICIENT_PADDY_STOCK")
+                .message(ex.getMessage())
+                .build();
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(error));
+    }
+
+    @ExceptionHandler(InvalidThreshingDataException.class)
+    public ResponseEntity<ApiResponse<Void>> handleInvalidThreshingData(InvalidThreshingDataException ex) {
+        log.error("Invalid threshing data: {}", ex.getMessage());
+        ErrorResponse error = ErrorResponse.builder()
+                .code("INVALID_THRESHING_DATA")
+                .message(ex.getMessage())
+                .build();
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(error));
+    }
+
+    @ExceptionHandler(ThreshingRecordNotFoundException.class)
+    public ResponseEntity<ApiResponse<Void>> handleThreshingRecordNotFound(ThreshingRecordNotFoundException ex) {
+        log.error("Threshing record not found: {}", ex.getMessage());
+        ErrorResponse error = ErrorResponse.builder()
+                .code("THRESHING_RECORD_NOT_FOUND")
+                .message(ex.getMessage())
+                .build();
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.error(error));
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiResponse<Void>> handleValidationException(MethodArgumentNotValidException ex) {
         List<String> details = new ArrayList<>();

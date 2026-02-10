@@ -52,8 +52,8 @@ public class StockMovement {
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id")
-    private Customer customer;
-    
+    private CustomerEntity customer;
+
     @Column(length = 100)
     private String referenceNo;
     

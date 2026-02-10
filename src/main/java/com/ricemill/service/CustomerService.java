@@ -1,7 +1,7 @@
 package com.ricemill.service;
 
 import com.ricemill.dto.CustomerDto;
-import com.ricemill.entity.Customer;
+import com.ricemill.entity.CustomerEntity;
 import com.ricemill.exception.ResourceNotFoundException;
 import com.ricemill.repository.CustomerRepository;
 import lombok.RequiredArgsConstructor;
@@ -25,18 +25,17 @@ public class CustomerService {
     }
     
     public CustomerDto.Response getCustomerById(UUID id) {
-        Customer customer = customerRepository.findByIdAndDeletedAtIsNull(id)
+        CustomerEntity customer = customerRepository.findByIdAndDeletedAtIsNull(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
         return toResponse(customer);
     }
     
     @Transactional
     public CustomerDto.Response createCustomer(CustomerDto.CreateRequest request) {
-        Customer customer = Customer.builder()
+        CustomerEntity customer = CustomerEntity.builder()
                 .name(request.getName())
-                .phone(request.getPhone())
+                .contact(request.getPhone())
                 .address(request.getAddress())
-//                .active(true)
                 .build();
         
         customer = customerRepository.save(customer);
@@ -45,14 +44,14 @@ public class CustomerService {
     
     @Transactional
     public CustomerDto.Response updateCustomer(UUID id, CustomerDto.UpdateRequest request) {
-        Customer customer = customerRepository.findByIdAndDeletedAtIsNull(id)
+        CustomerEntity customer = customerRepository.findByIdAndDeletedAtIsNull(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
         
         if (request.getName() != null) {
             customer.setName(request.getName());
         }
         if (request.getPhone() != null) {
-            customer.setPhone(request.getPhone());
+            customer.setContact(request.getPhone());
         }
         if (request.getAddress() != null) {
             customer.setAddress(request.getAddress());
@@ -67,18 +66,18 @@ public class CustomerService {
     
     @Transactional
     public void deleteCustomer(UUID id) {
-        Customer customer = customerRepository.findByIdAndDeletedAtIsNull(id)
+        CustomerEntity customer = customerRepository.findByIdAndDeletedAtIsNull(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
         customer.setDeletedAt(LocalDateTime.now());
         customer.setActive(false);
         customerRepository.save(customer);
     }
     
-    private CustomerDto.Response toResponse(Customer customer) {
+    private CustomerDto.Response toResponse(CustomerEntity customer) {
         return CustomerDto.Response.builder()
                 .id(customer.getId())
                 .name(customer.getName())
-                .phone(customer.getPhone())
+                .phone(customer.getContact())
                 .address(customer.getAddress())
                 .active(customer.getActive())
                 .createdAt(customer.getCreatedAt())

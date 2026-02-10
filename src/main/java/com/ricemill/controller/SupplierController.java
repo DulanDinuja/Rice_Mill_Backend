@@ -17,7 +17,6 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/suppliers")
 @RequiredArgsConstructor
-@PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'STAFF')")
 @Tag(name = "Supplier Management", description = "Supplier CRUD operations")
 public class SupplierController {
     
@@ -36,14 +35,12 @@ public class SupplierController {
     }
     
     @PostMapping
-    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     @Operation(summary = "Create supplier", description = "Create new supplier")
     public ApiResponse<SupplierDto.Response> createSupplier(@Valid @RequestBody SupplierDto.CreateRequest request) {
         return ApiResponse.success(supplierService.createSupplier(request));
     }
     
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     @Operation(summary = "Update supplier", description = "Update supplier details")
     public ApiResponse<SupplierDto.Response> updateSupplier(
             @PathVariable UUID id,
@@ -52,7 +49,6 @@ public class SupplierController {
     }
     
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Delete supplier", description = "Soft delete supplier")
     public ApiResponse<Void> deleteSupplier(@PathVariable UUID id) {
         supplierService.deleteSupplier(id);

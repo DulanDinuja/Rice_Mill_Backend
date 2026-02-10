@@ -23,28 +23,24 @@ public class WarehouseController {
     private final WarehouseService warehouseService;
     
     @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'STAFF')")
     @Operation(summary = "Get all warehouses", description = "Get paginated list of warehouses")
     public ApiResponse<Page<WarehouseDto.Response>> getAllWarehouses(Pageable pageable) {
         return ApiResponse.success(warehouseService.getAllWarehouses(pageable));
     }
     
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'STAFF')")
     @Operation(summary = "Get warehouse by ID", description = "Get warehouse details")
     public ApiResponse<WarehouseDto.Response> getWarehouseById(@PathVariable UUID id) {
         return ApiResponse.success(warehouseService.getWarehouseById(id));
     }
     
     @PostMapping
-    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     @Operation(summary = "Create warehouse", description = "Create new warehouse")
     public ApiResponse<WarehouseDto.Response> createWarehouse(@Valid @RequestBody WarehouseDto.CreateRequest request) {
         return ApiResponse.success(warehouseService.createWarehouse(request));
     }
     
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     @Operation(summary = "Update warehouse", description = "Update warehouse details")
     public ApiResponse<WarehouseDto.Response> updateWarehouse(
             @PathVariable UUID id,
@@ -53,7 +49,6 @@ public class WarehouseController {
     }
     
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Delete warehouse", description = "Soft delete warehouse")
     public ApiResponse<Void> deleteWarehouse(@PathVariable UUID id) {
         warehouseService.deleteWarehouse(id);

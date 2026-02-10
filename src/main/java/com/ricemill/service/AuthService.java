@@ -99,10 +99,7 @@ public class AuthService {
             throw new BusinessException("Passwords do not match");
         }
 
-        // Use email as username
-        String username = request.getEmail();
-
-        if (userRepository.existsByUsername(username)) {
+        if (userRepository.existsByUsername(request.getUsername())) {
             throw new BusinessException("Username already exists");
         }
         
@@ -110,15 +107,19 @@ public class AuthService {
             throw new BusinessException("Email already exists");
         }
         
+        if (userRepository.existsByIdNumber(request.getIdNumber())) {
+            throw new BusinessException("ID number already exists");
+        }
+
         // Default to STAFF role for public registration
         Set<UserRole> roles = new HashSet<>();
         roles.add(UserRole.STAFF);
 
         User user = User.builder()
-                .username(username)
+                .username(request.getUsername())
                 .email(request.getEmail())
                 .passwordHash(passwordEncoder.encode(request.getPassword()))
-                .fullName(request.getFullName())
+                .fullName(request.getUsername()) // Use username as fullName
                 .idNumber(request.getIdNumber())
                 .mobileNumber(request.getMobileNumber())
                 .roles(roles)
